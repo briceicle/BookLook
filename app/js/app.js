@@ -2,11 +2,10 @@
 
 /* App Module */
 
-angular.module('phonecat', ['phonecatFilters', 'phonecatServices']).
+angular.module('bookapp', ['bookappFilters', 'bookappServices']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   	  when('/login', {templateUrl: 'partials/login.html',   controller: LoginCtrl}).
-      when('/phones', {templateUrl: 'partials/phone-list.html',   controller: PhoneListCtrl}).
-      when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl}).
+  	  when('/items', {templateUrl: 'partials/public-items.html',   controller: MainCtrl}).
       otherwise({redirectTo: '/login'});
 }]);
