@@ -2,7 +2,7 @@
 
 /* App Module */
 
-angular.module('bookapp', ['bookappFilters', 'bookappServices']).
+angular.module('bookapp', ['bookappFilters', 'bookappServices', 'ui.bootstrap']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   	  when('/login', {templateUrl: 'partials/login.html',   controller: LoginCtrl}).

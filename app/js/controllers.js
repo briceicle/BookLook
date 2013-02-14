@@ -38,6 +38,7 @@ function MainCtrl($scope, $location, ParseService) {
 
   //On startup
   $scope.bookList = [];
+  $scope.myBooks = [];
   $scope.init();
   $scope.getBooks();
 }
