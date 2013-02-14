@@ -28,7 +28,17 @@ function MainCtrl($scope, $location, ParseService) {
     $scope.user = ParseService.getUser();
   };
 
+  $scope.getBooks = function() {
+    ParseService.getBooks(function(results) {
+      $scope.$apply(function() {
+        $scope.bookList = results;
+      });
+    });
+  };
+
   //On startup
+  $scope.bookList = [];
   $scope.init();
+  $scope.getBooks();
 }
 MainCtrl.$inject = ['$scope', '$location', 'ParseService']

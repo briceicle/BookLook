@@ -9,6 +9,8 @@ angular.module('bookappServices', ['ngResource'])
 
     // Define models
     var loggedInUser;
+    var Book = Parse.Object.extend("Book");
+    var BookCollection = Parse.Collection.extend({ model:Book});
 
     /**
      * ParseService Object
@@ -19,6 +21,7 @@ angular.module('bookappServices', ['ngResource'])
     var ParseService = {
       name: "Parse",
 
+      // Login a user
       login : function login(username, password, callback) {
     		Parse.User.logIn(username, password, {
     		  success: function(user) {
@@ -31,6 +34,7 @@ angular.module('bookappServices', ['ngResource'])
 		    });
       },
 
+      // Register a user
       signUp : function signUp(username, password, callback) {
       	Parse.User.signUp(username, password, { ACL: new Parse.ACL() }, {
             success: function(user) {
@@ -44,6 +48,23 @@ angular.module('bookappServices', ['ngResource'])
         });
       },
 
+      // Get all public books
+      getBooks : function getBooks(callback) {
+        // Create a new Parse Query to search Book records by visibility
+        var query = new Parse.Query(Book);
+        query.equalTo("visibility", "public");
+        // use the find method to retrieve all public books
+        query.find({
+          success : function(results) {
+            callback(results);
+          },
+          error: function(error) {
+            alert("Error: " + error.message);
+          }
+        });
+      },
+
+      // Get current logged in user
       getUser : function getUser() {
         if(loggedInUser) {
           return loggedInUser;

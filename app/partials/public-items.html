@@ -1,4 +1,19 @@
 <div id="books-panel">
     <h2>List of all available Books</h2>
-    <p>email: {{ user.get('email') }}</p>
+    <table class="table table-striped">
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Location</th>
+        <th>Owner</th>
+        <th>&nbsp;</th>
+      </tr>  
+      <tr ng-repeat="book in bookList">
+        <td>{{ book.get('name') }}</td>
+        <td>{{ book.get('status') }}</td>
+        <td>{{ book.get('location') }}</td>
+        <td>{{ book.get('ownerid') }}</td>
+        <td ng-show="book.get('status') == 'Available'"><a href="">Borrow</a></td>
+      </tr>
+    </table>
 </div>
