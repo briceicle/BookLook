@@ -1,7 +1,9 @@
 'use strict';
 
 /* jasmine specs for controllers go here */
-describe('PhoneCat controllers', function() {
+describe('bookapp controllers', function() {
+
+  document.write("<script src='http://www.parsecdn.com/js/parse-1.2.0.min.js' type='text/javascript'></script>");
 
   beforeEach(function(){
     this.addMatchers({
@@ -12,62 +14,42 @@ describe('PhoneCat controllers', function() {
   });
 
 
-  beforeEach(module('phonecatServices'));
+  beforeEach(module('bookappServices'));
 
 
-  describe('PhoneListCtrl', function(){
-    var scope, ctrl, $httpBackend;
+  describe('LoginCtrl', function(){
+    var scope, rootScope, ctrl, location;
 
-    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
-      $httpBackend = _$httpBackend_;
-      $httpBackend.expectGET('phones/phones.json').
-          respond([{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
-
+    beforeEach(inject(function($location, $rootScope, $controller) {
+      location = $location;
+      rootScope = $rootScope;
       scope = $rootScope.$new();
-      ctrl = $controller(PhoneListCtrl, {$scope: scope});
-    }));
+      ctrl = $controller(LoginCtrl, {$scope: scope});
+  }));
 
-
-    it('should create "phones" model with 2 phones fetched from xhr', function() {
-      expect(scope.phones).toEqual([]);
-      $httpBackend.flush();
-
-      expect(scope.phones).toEqualData(
-          [{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
-    });
-
-
-    it('should set the default value of orderProp model', function() {
-      expect(scope.orderProp).toBe('age');
+    it('After login should redirect to /items', function() {
+        scope.login_username = 'admin';
+        scope.login_password = 'password';
+        scope.login();
+        expect(location.path()).toBe('/items');
     });
   });
 
+  describe('MainCtrl', function(){
+    var scope, rootScope, ctrl, location;
 
-  describe('PhoneDetailCtrl', function(){
-    var scope, $httpBackend, ctrl,
-        xyzPhoneData = function() {
-          return {
-            name: 'phone xyz',
-                images: ['image/url1.png', 'image/url2.png']
-          }
-        };
-
-
-    beforeEach(inject(function(_$httpBackend_, $rootScope, $routeParams, $controller) {
-      $httpBackend = _$httpBackend_;
-      $httpBackend.expectGET('phones/xyz.json').respond(xyzPhoneData());
-
-      $routeParams.phoneId = 'xyz';
+    beforeEach(inject(function($location, $rootScope, $controller) {
+      location = $location;
+      location.path('/items');
+      rootScope = $rootScope;
       scope = $rootScope.$new();
-      ctrl = $controller(PhoneDetailCtrl, {$scope: scope});
-    }));
+      ctrl = $controller(MainCtrl, {$scope: scope});
+  }));
 
-
-    it('should fetch phone detail', function() {
-      expect(scope.phone).toEqualData({});
-      $httpBackend.flush();
-
-      expect(scope.phone).toEqualData(xyzPhoneData());
+    it('Langing page should be /items', function() {
+        rootScope.$apply();
+        expect(location.path()).toBe('/items');
     });
   });
+
 });
