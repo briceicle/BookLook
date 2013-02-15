@@ -3,26 +3,62 @@
         <pane heading="Public Books">
           <div id="books-panel">
             <h2>List of all available Books</h2>
-            <table class="table table-striped">
+            <div>
+              Search: <input ng-model="query1">
+            </div>
+            </br>
+            <table class="table">
               <tr>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Location</th>
                 <th>Owner</th>
+                <th>Requests</th>
                 <th>&nbsp;</th>
               </tr>  
-              <tr ng-repeat="book in bookList">
+              <tr ng-repeat="book in bookList | filter:query1 | orderBy:orderProp">
                 <td>{{ book.get('name') }}</td>
                 <td>{{ book.get('status') }}</td>
                 <td>{{ book.get('location') }}</td>
-                <td>{{ book.get('ownerid') }}</td>
-                <td ng-show="book.get('status') == 'Available'"><a href="">Borrow</a></td>
+                <td>{{ book.get('owner') }}</td>
+                <td>{{ book.get('requestCount') }}</td>
+                <td ng-show="book.get('status') == 'Available'"><a href="" ng-click="borrow(book)">Borrow</a></td>
               </tr>
             </table>
           </div>
         </pane>
         <pane heading="My Books">
           <p ng-show="myBooks.length == 0">You have no books</p>
+          <div ng-show="myBooks.length > 0">
+            <h2 >List of all your Books</h2>
+            <div>
+              Search: <input ng-model="query2">
+            </div>
+            </br>
+            <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Location</th>
+                <th>Requests</th>
+                <th>&nbsp;</th>
+              </tr>  
+              <tr ng-repeat="book in myBooks | filter:query2">
+                <td>{{ book.get('name') }}</td>
+                <td>{{ book.get('status') }}</td>
+                <td>{{ book.get('location') }}</td>
+                <td>{{ book.get('requestCount') }}</td>
+                <td>
+                  <ul>
+                    <li><a href="">Edit</a></li>
+                    <li ng-show="book.get('status') == 'Available'"><a href="">Delete</a></li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+          </div>
+          </br>
+          <button class="btn" ng-click="addBook()">Add Book</button>
         </pane>
     </tabs>
     <div class="row-fluid">
