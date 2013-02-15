@@ -56,11 +56,16 @@ function MainCtrl($scope, $location, ParseService) {
 
   // Create a new book request and refresh the book list
   $scope.borrow = function(book) {
-    ParseService.borrow(book, function(results) {
+    ParseService.borrow(book, function() {
+      // refresh book list
       alert("Borrow request sent to owner!");
     });
+  }
 
-    $scope.getBooks();
+  // logs the user out and re-direct to login page
+  $scope.logout = function() {
+    ParseService.logout();
+    $location.path('/login');
   }
 
   /**

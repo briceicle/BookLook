@@ -53,6 +53,11 @@ angular.module('bookappServices', ['ngResource'])
         });
       },
 
+      // Logout current user
+      logout : function logout(callback) {
+        Parse.User.logOut();
+      },
+
       // Get all public books
       getBooks : function getBooks(callback) {
         // Create a new Parse Query to search Book records by visibility
@@ -96,6 +101,7 @@ angular.module('bookappServices', ['ngResource'])
             // on success, increment the request count for the book
             book.increment("requestCount");
             book.save();
+
             callback();
           }
         });
