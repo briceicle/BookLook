@@ -1,0 +1,33 @@
+<div>
+    <form name="myForm">
+      Name: <input name="input" ng-model="name" required>
+      <span class="error" ng-show="myForm.input.$error.required">Required!</span>
+  	  </br>
+  	  </br>
+      Status:
+	  <select ng-model="status" required>
+	    <option value="Available">Available</option>
+	    <option value="Borrowed">Borrowed</option>
+	  </select>
+	  </br>
+	  </br>
+	  Visibility:
+	  <select ng-model="visibility" required>
+	    <option value="public">Public</option>
+	    <option value="private">Private</option>
+	    <option value="friends">Friends Only</option>
+	  </select>
+	  </br>
+	  </br>
+	  Location:
+	  <select ng-model="location" required>
+	    <option value="Toronto">Toronto</option>
+	    <option value="Waterloo">Waterloo</option>
+	    <option value="Mississauga">Mississauga</option>
+	    <option value="Brampton">Brampton</option>
+	  </select>
+	  </br>
+	  </br>
+	  <button class="btn" ng-click="addBook()" ng-disabled="myForm.$invalid">Submit</button>
+    </form>
+</div>

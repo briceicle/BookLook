@@ -21,6 +21,14 @@ function LoginCtrl($scope, $location, ParseService) {
       $location.path('/items');
     });
 	}
+
+  // Perform user login using Facebook API
+  $scope.FB_login = function() {
+    ParseService.FB_login(function(user) {
+      // When service call is finished, navigate to items page
+      $location.path('/items');
+    });
+  }
 }
 LoginCtrl.$inject = ['$scope', '$location', 'ParseService']
 
@@ -32,7 +40,7 @@ function MainCtrl($scope, $location, ParseService) {
     $scope.user = ParseService.getUser();
   }
 
-  // Fetch the list of public books from the back-end service
+  // Fetch the list of public books from the backend service
   $scope.getBooks = function() {
     ParseService.getBooks(function(results) {
       $scope.$apply(function() {
@@ -41,7 +49,7 @@ function MainCtrl($scope, $location, ParseService) {
     });
   }
 
-  // Fetch the list books from the back-end service
+  // Fetch the list books from the backend service
   $scope.getMyBooks = function() {
     ParseService.getMyBooks(function(results) {
       $scope.$apply(function() {
@@ -50,15 +58,34 @@ function MainCtrl($scope, $location, ParseService) {
     });
   }
 
-  $scope.addBook = function() {
+  // Fetch the list of book requests from the backend service
+  $scope.getRequests = function() {
+    ParseService.getRequests(function(results) {
+      $scope.$apply(function() {
+        $scope.requests = results;
+      })
+    });
+  }
 
+  // Navigate to add book form
+  $scope.add = function() {
+    $location.path('/add');
   }
 
   // Create a new book request and refresh the book list
   $scope.borrow = function(book) {
-    ParseService.borrow(book, function() {
-      // refresh book list
+    ParseService.borrow(book, function(result) {
       alert("Borrow request sent to owner!");
+      $scope.$apply(function() {
+        book = result;
+      })
+    });
+  }
+
+  // Add a new book record to Parse backend service
+  $scope.addBook = function() {
+    ParseService.addBook($scope.name, $scope.status, $scope.visibility, $scope.location, function() {
+      $location.path('/items');
     });
   }
 
@@ -73,8 +100,10 @@ function MainCtrl($scope, $location, ParseService) {
    */
   $scope.bookList = [];
   $scope.myBooks = [];
+  $scope.requests = [];
   $scope.init();
   $scope.getBooks();
   $scope.getMyBooks();
+  $scope.getRequests();
 }
 MainCtrl.$inject = ['$scope', '$location', 'ParseService']

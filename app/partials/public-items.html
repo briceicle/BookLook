@@ -22,7 +22,7 @@
                 <td>{{ book.get('location') }}</td>
                 <td>{{ book.get('owner') }}</td>
                 <td>{{ book.get('requestCount') }}</td>
-                <td ng-show="book.get('status') == 'Available'"><a href="" ng-click="borrow(book)">Borrow</a></td>
+                <td ng-show="book.get('status') == 'Available'"><button class="btn" ng-click="borrow(book)">Borrow</button></td>
               </tr>
             </table>
           </div>
@@ -58,7 +58,35 @@
             </table>
           </div>
           </br>
-          <button class="btn" ng-click="addBook()">Add Book</button>
+          <button class="btn" ng-click="add()">Add Book</button>
+        </pane>
+          <pane heading="Book Requests">
+          <p ng-show="requests.length == 0">You have no requests</p>
+          <div ng-show="requests.length > 0">
+            <h2 >List of all your Requests</h2>
+            </br>
+            <table class="table">
+              <tr>
+                <th>Book</th>
+                <th>Borrower</th>
+                <th>Date Borrowed</th>
+                <th>Date Returned</th>
+                <th>&nbsp;</th>
+              </tr>  
+              <tr ng-repeat="request in requests">
+                <td>{{ request.get('book') }}</td>
+                <td>{{ request.get('borrower') }}</td>
+                <td>{{ request.get('date_borrowed') }}</td>
+                <td>{{ request.get('date_returned') }}</td>
+                <td>
+                  <ul>
+                    <li ng-show="request.get('status') == 'Pending'"><button ng-click="accept()">Accept</button></li>
+                    <li ng-show="request.get('status') == 'Pending'"><button ng-click="reject()">Reject</button></li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+          </div>
         </pane>
     </tabs>
     <div class="row-fluid">

@@ -10,9 +10,12 @@ angular.module('bookappServices', ['ngResource'])
     // Cache current logged in user
     var loggedInUser;
 
+    // Cache list of user's books
+    var myBooks = [];
+
     // Define parse model and collection for Book records
     var Book = Parse.Object.extend("Book");
-    var BookCollection = Parse.Collection.extend({ model:Book});
+    var BookCollection = Parse.Collection.extend({ model:Book });
 
     // Define parse model and collection for BookRequest records
     var BookRequest = Parse.Object.extend("BookRequest");
@@ -28,15 +31,33 @@ angular.module('bookappServices', ['ngResource'])
 
       // Login a user
       login : function login(username, password, callback) {
-    		Parse.User.logIn(username, password, {
-    		  success: function(user) {
+    	  Parse.User.logIn(username, password, {
+    	    success: function(user) {
             loggedInUser = user;
-    		    callback(user);
-    		  },
-    		  error: function(user, error) {
-    		    alert("Error: " + error.message);
-    		  }
-		    });
+    	      callback(user);
+    	    },
+    	    error: function(user, error) {
+    	      alert("Error: " + error.message);
+    	    }
+        });
+      },
+
+      // Login a user using Facebook
+      FB_login : function FB_login(callback) {
+        Parse.FacebookUtils.logIn(null, {
+          success: function(user) {
+            if (!user.existed()) {
+              alert("User signed up and logged in through Facebook!");
+            } else {
+              alert("User logged in through Facebook!");
+            }
+            loggedInUser = user;
+            callback(user);
+          },
+          error: function(user, error) {
+            alert("User cancelled the Facebook login or did not fully authorize.");
+          }
+        });
       },
 
       // Register a user
@@ -84,6 +105,27 @@ angular.module('bookappServices', ['ngResource'])
         // use the find method to retrieve all books
         query.find({
           success : function(results) {
+            for (var i=0; i<results.length; i++)
+            { 
+              myBooks[i]  = results[i].get('name');
+            }
+            callback(results);
+          },
+          error: function(error) {
+            alert("Error: " + error.message);
+          }
+        });
+      },
+
+      // Get all requests for current user's books
+      getRequests : function getRequests(callback) {
+        // Create a new Parse Query to search requests records by ownerid
+        var query = new Parse.Query(BookRequest);
+        query.notEqualTo("borrower", loggedInUser.get('username'));
+        query.containedIn("book", myBooks);
+        // use the find method to retrieve all requests
+        query.find({
+          success : function(results) {
             callback(results);
           },
           error: function(error) {
@@ -95,14 +137,30 @@ angular.module('bookappServices', ['ngResource'])
       // Creates a borrow request for the given book
       borrow : function borrow(book, callback) {
         // Create and save a request
-        var testObject = new BookRequest();
-        testObject.save({book: book.get('name'), borrower:loggedInUser.get('username'), status:"Pending", date_borrowed:null, date_returned:null}, {
+        var object = new BookRequest();
+        object.save({book: book.get('name'), borrower:loggedInUser.get('username'), status:"Pending", date_borrowed:null, date_returned:null}, {
           success: function(object) {
             // on success, increment the request count for the book
             book.increment("requestCount");
             book.save();
 
+            callback(book);
+          },
+          error: function(error) {
+            alert("Error: " + error.message);
+          }
+        });
+      },
+
+      // Create a new book record
+      addBook : function addBook(_name, _status, _visibility, _location, callback) {
+        var object = new Book();
+        object.save({name:_name, owner:loggedInUser.get('username'), status:_status, visibility:_visibility, location:_location}, {
+          success: function(object) {
             callback();
+          },
+          error: function(error) {
+            alert("Error: " + error.message);
           }
         });
       },
