@@ -1,15 +1,15 @@
 <div>
   <form class="login_form">
     <h2>Log In</h2>
-    Username: </br><input type="text" ng-model="login_username"/></br>
-    Password: </br><input type="password" ng-model="login_password"/></br>
-    <button class='btn' ng-click="login()">Log In</button>
+    Username </br><input type="text" ng-model="login_username"/></br>
+    Password </br><input type="password" ng-model="login_password"/></br>
+    <button class='btn' ng-click="login()" ng-model="login_btn">Log In</button>
   </form>
   <form class="signup_form">
-    <h2>Sign up</h2>
-    Username: </br><input type="text" ng-model="signup_username"/></br>
-    Create a Password: </br><input type="password" ng-model="signup_password"/></br>
-    <button class='btn' ng-click="signUp()">Sign Up</button>
+    <h2>Sign Up</h2>
+    Username </br><input type="text" ng-model="signup_username"/></br>
+    Create a Password </br><input type="password" ng-model="signup_password"/></br>
+    <button class='btn' ng-click="signUp()" ng-model="signup_btn">Sign Up</button>
   </form>
   </br>
   <button class='btn' ng-click="FB_login()">Connect with Facebook</button>

@@ -47,7 +47,7 @@ describe('bookapp controllers', function() {
       location = $location;
       rootScope = $rootScope;
       scope = $rootScope.$new();
-      ctrl = $controller(MainCtrl, {$scope: scope});
+      ctrl = $controller(MainCtrl, {$scope: scope, $location: location,  ParseService: ParseService});
     }));
 
     it('List of public books should be 3', function() {
@@ -72,6 +72,24 @@ describe('bookapp controllers', function() {
     it('Should redirect to add form', function() {
       scope.add();
       expect(location.path()).toBe('/add');
+    });
+
+    it('Should update request status when accepting', function() {
+      var Request = Parse.Object.extend("BookRequest");
+      var request = new Request();
+      book.set("book", "Twilight");
+      book.set("status", "Pending");
+      scope.accept(request);
+      expect(request.get("status")).toBe("Accepted");
+    });
+
+    it('Should update request status when rejecting', function() {
+      var Request = Parse.Object.extend("BookRequest");
+      var request = new Request();
+      book.set("book", "Twilight");
+      book.set("status", "Pending");
+      scope.reject(request);
+      expect(request.get("status")).toBe("Rejected");
     });
   });
 

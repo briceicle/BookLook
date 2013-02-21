@@ -98,7 +98,7 @@ angular.module('bookappServices', ['ngResource'])
       },
 
       // Get all books belonging to logged in user
-      getMyBooks : function getBooks(callback) {
+      getMyBooks : function getMyBooks(callback) {
         // Create a new Parse Query to search Book records by ownerid
         var query = new Parse.Query(Book);
         query.equalTo("owner", loggedInUser.get('username'));
@@ -119,19 +119,50 @@ angular.module('bookappServices', ['ngResource'])
 
       // Get all requests for current user's books
       getRequests : function getRequests(callback) {
-        // Create a new Parse Query to search requests records by ownerid
-        var query = new Parse.Query(BookRequest);
-        query.notEqualTo("borrower", loggedInUser.get('username'));
-        query.containedIn("book", myBooks);
-        // use the find method to retrieve all requests
-        query.find({
-          success : function(results) {
-            callback(results);
-          },
-          error: function(error) {
-            alert("Error: " + error.message);
-          }
-        });
+        var query;
+        if (myBooks.length == 0) {
+          query = new Parse.Query(Book);
+          query.equalTo("owner", loggedInUser.get('username'));
+          // use the find method to retrieve all books
+          query.find({
+            success : function(results) {
+              for (var i=0; i<results.length; i++)
+              { 
+                myBooks[i]  = results[i].get('name');
+              }
+              // Create a new Parse Query to search requests records by ownerid
+              query = new Parse.Query(BookRequest);
+              query.notEqualTo("borrower", loggedInUser.get('username'));
+              query.containedIn("book", myBooks);
+              // use the find method to retrieve all requests
+              query.find({
+                success : function(results) {
+                  callback(results);
+                },
+                error: function(error) {
+                  alert("Error: " + error.message);
+                }
+              });
+            },
+            error: function(error) {
+              alert("Error: " + error.message);
+            }
+          });
+        } else {
+          // Create a new Parse Query to search requests records by ownerid
+          query = new Parse.Query(BookRequest);
+          query.notEqualTo("borrower", loggedInUser.get('username'));
+          query.containedIn("book", myBooks);
+          // use the find method to retrieve all requests
+          query.find({
+            success : function(results) {
+              callback(results);
+            },
+            error: function(error) {
+              alert("Error: " + error.message);
+            }
+          });
+        }
       },
 
       // Creates a borrow request for the given book
@@ -142,14 +173,46 @@ angular.module('bookappServices', ['ngResource'])
           success: function(object) {
             // on success, increment the request count for the book
             book.increment("requestCount");
-            book.save();
-
-            callback(book);
+            book.save({
+              success: function(object) {
+                callback(object);
+              },
+              error: function(error) {
+                alert("Error: " + error.message);
+              }
+            });
           },
           error: function(error) {
             alert("Error: " + error.message);
           }
         });
+      },
+      
+      // Set request status to 'Accepted' and update date borrowed
+      accept : function accept(request, callback) {
+        request.set("status", "Accepted");
+        request.set("date_borrowed", new Date());
+        request.save({
+          success: function(object) {
+            callback(object);
+          },
+          error: function(error) {
+            alert("Error: " + error.message);
+          }
+        })
+      },
+
+      // Set request status to 'Rejected' and update date borrowed
+      reject : function reject(request, callback) {
+        request.set("status", "Rejected");
+        request.save({
+          success: function(object) {
+            callback(object);
+          },
+          error: function(error) {
+            alert("Error: " + error.message);
+          }
+        })
       },
 
       // Create a new book record

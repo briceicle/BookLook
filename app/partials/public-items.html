@@ -69,6 +69,7 @@
               <tr>
                 <th>Book</th>
                 <th>Borrower</th>
+                <th>Status</th>
                 <th>Date Borrowed</th>
                 <th>Date Returned</th>
                 <th>&nbsp;</th>
@@ -76,13 +77,12 @@
               <tr ng-repeat="request in requests">
                 <td>{{ request.get('book') }}</td>
                 <td>{{ request.get('borrower') }}</td>
-                <td>{{ request.get('date_borrowed') }}</td>
-                <td>{{ request.get('date_returned') }}</td>
+                <td>{{ request.get('status') }}</td>
+                <td>{{ request.get('date_borrowed') | date:"MM/dd/yyyy @ h:mma" }}</td>
+                <td>{{ request.get('date_returned') | date:"MM/dd/yyyy @ h:mma" }}</td>
                 <td>
-                  <ul>
-                    <li ng-show="request.get('status') == 'Pending'"><button ng-click="accept()">Accept</button></li>
-                    <li ng-show="request.get('status') == 'Pending'"><button ng-click="reject()">Reject</button></li>
-                  </ul>
+                  <button class="btn" ng-show="request.get('status') == 'Pending'" ng-click="accept(request)">Accept</button>
+                  <button class="btn" ng-show="request.get('status') == 'Pending'" ng-click="reject(request)">Reject</button>
                 </td>
               </tr>
             </table>

@@ -82,6 +82,24 @@ function MainCtrl($scope, $location, ParseService) {
     });
   }
 
+  // Accept a book request
+  $scope.accept = function(request) {
+    ParseService.accept(request, function(result) {
+      $scope.$apply(function() {
+        request = result;
+      })
+    });
+  }
+
+  // Reject a book request
+  $scope.reject = function(request) {
+    ParseService.reject(request, function(result) {
+      $scope.$apply(function() {
+        request = result;
+      })
+    });
+  }
+
   // Add a new book record to Parse backend service
   $scope.addBook = function() {
     ParseService.addBook($scope.name, $scope.status, $scope.visibility, $scope.location, function() {
